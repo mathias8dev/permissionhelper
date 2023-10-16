@@ -17,7 +17,7 @@ val PermissionState.shouldShowRationale: Boolean
     get() = this == PermissionState.ShowRationale
 
 
-val PermissionState.Denied: Boolean
+val PermissionState.isDenied: Boolean
     get() = this == PermissionState.Denied
 
 

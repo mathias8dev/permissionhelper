@@ -16,7 +16,14 @@ interface MultiplePermissionHelperScope {
     /**
      * Used to launch permissions. Permissions are launched according to the defined launch strategy
      */
-    suspend fun launchPermission(): List<Pair<Permission, PermissionState>>
+    fun launchPermissions(
+        onPermissionsResult: (List<Pair<Permission, PermissionState>>)->Unit
+    )
+
+    fun launchPermissions(
+        permissions: List<Permission>,
+        onPermissionsResult: (List<Pair<Permission, PermissionState>>)->Unit
+    )
 
     /**
      * Provide [PermissionLaunchStrategy] to the [MultiplePermissionHelperScope] to use when
