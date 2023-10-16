@@ -72,8 +72,6 @@ internal open class BasePermissionHelperScopeImpl(
     override fun getPermissionState(): PermissionState {
         checkIfCurrentPermissionIsInitialized()
         return if (context.checkPermission(currentLaunchedPermission.manifestKey)) PermissionState.Granted
-        else if (context.findActivity().shouldShowRationale(currentLaunchedPermission.manifestKey))
-            PermissionState.ShowRationale
         else PermissionState.Denied
     }
 

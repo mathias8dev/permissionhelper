@@ -29,9 +29,11 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
 
     @Composable
     private fun ListItem(
+        modifier: Modifier = Modifier,
         content: @Composable () -> Unit
     ) {
         Row(
+            modifier = modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -72,7 +74,9 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
             if (icons.isNotEmpty()) Spacer(modifier = Modifier.height(32.dp))
 
             permissions.forEach { permission ->
-                ListItem {
+                ListItem(
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = permission.titleRes?.let { stringResource(id = it) }
@@ -84,7 +88,7 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
                 }
 
                 Text(
-                    modifier = Modifier.padding(top = 16.dp),
+                    modifier = Modifier.padding(top = 8.dp),
                     text = permission.descriptionRes?.let { stringResource(id = it) }
                         ?: "Please we need this permission to make you use all features of this application"
                 )
@@ -132,7 +136,9 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
             if (icons.isNotEmpty()) Spacer(modifier = Modifier.height(32.dp))
 
             permissions.forEach { permission ->
-                ListItem {
+                ListItem(
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = permission.titleRes?.let { stringResource(id = it) }
@@ -144,7 +150,7 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
                 }
 
                 Text(
-                    modifier = Modifier.padding(top = 16.dp),
+                    modifier = Modifier.padding(top = 8.dp),
                     text = permission.rationaleRes?.let { stringResource(id = it) }
                         ?: "Please we need this permission to make you use all features of this application"
                 )
@@ -187,7 +193,9 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
             if (icons.isNotEmpty()) Spacer(modifier = Modifier.height(32.dp))
 
             permissions.forEach { permission ->
-                ListItem {
+                ListItem(
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
                     Text(
                         modifier = Modifier.padding(top = 16.dp),
                         text = permission.grantedRes?.let { stringResource(id = it) }
@@ -233,7 +241,9 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
             }
             if (icons.isNotEmpty()) Spacer(modifier = Modifier.height(32.dp))
             permissions.forEach { permission ->
-                ListItem {
+                ListItem(
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = permission.titleRes?.let { stringResource(id = it) }
@@ -245,7 +255,7 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
                 }
 
                 Text(
-                    modifier = Modifier.padding(top = 16.dp),
+                    modifier = Modifier.padding(top = 8.dp),
                     text = permission.gotoSettingsRes?.let { stringResource(id = it) }
                         ?: "We are not authorized to ask you for the permission. Please goto settings to do it yourself"
                 )
