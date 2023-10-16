@@ -43,57 +43,65 @@ internal class MultiplePermissionHelperScopeImpl internal constructor(
     ) {
         val launchedPermissionsResult = mutableListOf<Pair<Permission, PermissionState>>()
         val declaredPermissions = permissions.distinct()
-        coroutineScope.launch {
-            var index = 0
-            var permissionWasAlreadyGranted = false
-            var lastConfig: PermissionConfig? = null
-            while (index < declaredPermissions.size) {
+        var permissionWasAlreadyGranted = false
+        var lastConfig: PermissionConfig? = null
+        var index = 0
+        fun recursivePermissionLaunch() {
+            if (index >= declaredPermissions.size) {
+                onPermissionsResult(launchedPermissionsResult)
+                return
+            } else {
                 val permission = declaredPermissions[index]
                 val permissionConfig = launchStrategy.getConfig(permission)
-                lastConfig?.let { oldConfig ->
-                    if (!permissionWasAlreadyGranted || !oldConfig.skipConfigIfAlreadyGranted) {
-                        oldConfig.delayForNextRequest?.let {
-                            delay(it)
+                coroutineScope.launch {
+                    lastConfig?.let { oldConfig ->
+                        if (!permissionWasAlreadyGranted || !oldConfig.skipConfigIfAlreadyGranted) {
+                            oldConfig.delayForNextRequest?.let {
+                                delay(it)
+                            }
+                            oldConfig.suspendedCall?.invoke()
                         }
-                        oldConfig.suspendedCall?.invoke()
                     }
-                }
-                if (context.checkPermission(permission.manifestKey)) {
-                    launchedPermissionsResult.add(permission to PermissionState.Granted)
-                    permissionWasAlreadyGranted = true
-                    index++
-                    continue
-                } else {
-                    permissionWasAlreadyGranted = false
-                }
-                val failedPermission =
-                    permissionConfig.permissionsToCheck.find { !context.checkPermission(it.manifestKey) }
-                if (failedPermission != null) {
-                    val deniedPermissions =
-                        declaredPermissions.subList(index, declaredPermissions.size)
-                            .map { it to PermissionState.Denied }
-                    launchedPermissionsResult.addAll(deniedPermissions)
-                    index = declaredPermissions.size
-                    continue
-                }
-                currentLaunchedPermission = permission
-                launchPermission { permissionState ->
-                    launchedPermissionsResult.add(permission to permissionState)
-                    if (permissionState.isDenied && permissionConfig.abortOnFail) {
+                    lastConfig = permissionConfig
+                    if (context.checkPermission(permission.manifestKey)) {
+                        launchedPermissionsResult.add(permission to PermissionState.Granted)
+                        permissionWasAlreadyGranted = true
+                        index++
+                        recursivePermissionLaunch()
+                    } else {
+                        permissionWasAlreadyGranted = false
+                    }
+                    val failedPermission =
+                        permissionConfig.permissionsToCheck.find { !context.checkPermission(it.manifestKey) }
+                    if (failedPermission != null) {
                         val deniedPermissions =
-                            declaredPermissions.subList(index + 1, declaredPermissions.size)
+                            declaredPermissions.subList(index, declaredPermissions.size)
                                 .map { it to PermissionState.Denied }
                         launchedPermissionsResult.addAll(deniedPermissions)
                         index = declaredPermissions.size
+                        recursivePermissionLaunch()
+                    }
+                    currentLaunchedPermission = permission
+                    launchPermission { permissionState ->
+                        if (permissionState.isDenied && permissionConfig.abortOnFail) {
+                            val deniedPermissions =
+                                declaredPermissions.subList(index, declaredPermissions.size)
+                                    .map { it to PermissionState.Denied }
+                            launchedPermissionsResult.addAll(deniedPermissions)
+                            index = declaredPermissions.size
+                            recursivePermissionLaunch()
+                        } else {
+                            index++
+                            launchedPermissionsResult.add(permission to permissionState)
+                            recursivePermissionLaunch()
+                        }
                     }
                 }
-
-                lastConfig = permissionConfig
-                index++
             }
-            onPermissionsResult(launchedPermissionsResult)
+
         }
 
+        recursivePermissionLaunch()
     }
 
     override fun launchStrategy(

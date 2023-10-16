@@ -14,11 +14,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mathias8dev.permissionhelper.permission.MultiplePermissionHelper
 import com.mathias8dev.permissionhelper.permission.Permission
 import com.mathias8dev.permissionhelper.permission.PermissionHelper
 import com.mathias8dev.permissionhelper.permission.isGranted
@@ -34,17 +36,34 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PermissionHelper(
-                        permission = Permission(
+
+                    val cameraPermission = remember {
+                        Permission(
                             manifestKey = Manifest.permission.CAMERA
                         )
+                    }
+
+                    val coarseLocation = remember {
+                        Permission(
+                            manifestKey = Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                    }
+
+                    val fineLocation = remember {
+                        Permission(
+                            manifestKey = Manifest.permission.ACCESS_FINE_LOCATION
+                        )
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        PermissionHelper(
+                            permission = cameraPermission
                         ) {
                             TextButton(onClick = {
                                 launchPermission {
@@ -56,7 +75,28 @@ class MainActivity : ComponentActivity() {
                                     ).show()
                                 }
                             }) {
-                                Text("Enable the permission")
+                                Text("Test single permission")
+                            }
+                        }
+
+                        MultiplePermissionHelper(
+                            permissionsWithLaunchers = mapOf(
+                                fineLocation to null,
+                                coarseLocation to null,
+                                cameraPermission to null
+                            )
+                        ) {
+                            TextButton(onClick = {
+                                launchPermissions {
+                                    Toast.makeText(
+                                        localContext,
+                                        if (it.all { itt -> itt.second.isGranted }) "permissions granted"
+                                        else "permissions are not granted",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }) {
+                                Text("Test multiple permissions")
                             }
                         }
                     }
@@ -65,6 +105,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

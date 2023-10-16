@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun MultiplePermissionHelper(
-    permissionsWithLaunchers: Map<Permission, PermissionRequestUi>,
+    permissionsWithLaunchers: Map<Permission, PermissionRequestUi?>,
     content: @Composable MultiplePermissionHelperScope.()->Unit
 ) {
 
