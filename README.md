@@ -1,6 +1,8 @@
 # PermissionHelper Android Library
 Simple Android library to help to manage android permission request flow.
 
+[![Jitpack latest version](https://jitpack.io/v/mathias8dev/permissionhelper.svg)](https://jitpack.io/#mathias8dev/permissionhelper)
+
 
 ## Setup
 ### 1. Import JitPack Android Library
@@ -179,49 +181,49 @@ MultiplePermissionHelper(
 <summary>Using One Shot Permission request with OneShotPermissionsHelper</summary>
 
 ```kotlin
-val cameraPermission = remember {  
-  Permission(  
-        manifestKey = Manifest.permission.CAMERA  
-  )  
+val cameraPermission = remember {
+    Permission(
+        manifestKey = Manifest.permission.CAMERA
+    )
 }
 
-val coarseLocation = remember {  
-  Permission(  
-        manifestKey = Manifest.permission.ACCESS_COARSE_LOCATION  
-  )  
-}  
-  
-val fineLocation = remember {  
-  Permission(  
-        manifestKey = Manifest.permission.ACCESS_FINE_LOCATION  
-  )  
+val coarseLocation = remember {
+    Permission(
+        manifestKey = Manifest.permission.ACCESS_COARSE_LOCATION
+    )
 }
 
-OneShotPermissionsHelper(  
-    permissions = listOf(fineLocation, coarseLocation, cameraPermission) 
-) {  
-  Column(  
-        modifier = Modifier  
-            .fillMaxSize()  
-            .padding(16.dp),  
-	    verticalArrangement = Arrangement.Center,  
-	    horizontalAlignment = Alignment.CenterHorizontally  
-  ) {   
-  
-  TextButton(
-    onClick = {  
-	  launchPermissions {  
-		  Toast.makeText(  
-			 localContext,  
-			 if (it.all { itt -> itt.second.isGranted }) "permissions granted"  
-			 else "permissions are not granted",  
-			 Toast.LENGTH_LONG  
-	  ).show()  
-	            }  
- }) {  
-	  Text("Test multiple permissions")  
-  }  
- }
+val fineLocation = remember {
+    Permission(
+        manifestKey = Manifest.permission.ACCESS_FINE_LOCATION
+    )
+}
+
+OneShotPermissionsHelper(
+    permissions = listOf(fineLocation, coarseLocation, cameraPermission)
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        TextButton(
+            onClick = {
+                launchPermissions {
+                    Toast.makeText(
+                        localContext,
+                        if (it.all { itt -> itt.second.isGranted }) "permissions granted"
+                        else "permissions are not granted",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }) {
+            Text("Test multiple permissions")
+        }
+    }
 }
 ```
 
