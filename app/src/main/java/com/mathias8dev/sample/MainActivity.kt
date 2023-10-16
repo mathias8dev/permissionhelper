@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mathias8dev.permissionhelper.permission.MultiplePermissionHelper
+import com.mathias8dev.permissionhelper.permission.OneShotPermissionsHelper
 import com.mathias8dev.permissionhelper.permission.Permission
 import com.mathias8dev.permissionhelper.permission.PermissionHelper
 import com.mathias8dev.permissionhelper.permission.isGranted
@@ -97,6 +98,24 @@ class MainActivity : ComponentActivity() {
                                 }
                             }) {
                                 Text("Test multiple permissions")
+                            }
+                        }
+
+
+                        OneShotPermissionsHelper(
+                            permissions = listOf(fineLocation, coarseLocation, cameraPermission)
+                        ) {
+                            TextButton(onClick = {
+                                launchPermissions {
+                                    Toast.makeText(
+                                        localContext,
+                                        if (it.all { itt -> itt.second.isGranted }) "permissions granted"
+                                        else "permissions are not granted",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }) {
+                                Text("Test one shot multiple permissions")
                             }
                         }
                     }
