@@ -2,6 +2,8 @@ package com.mathias8dev.permissionhelper.permission
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,30 +33,16 @@ fun PermissionDialog(
             .fillMaxWidth(),
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(usePlatformDefaultWidth = false),
-        content = {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .background(
-                        MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(cornerRadius),
-                    )
-                    .padding(contentPadding)
-                    .useModifierIf(
-                        condition = makeContentScrollable,
-                        callback = { return@useModifierIf it.verticalScroll(scrollState) },
-                    ),
-            ) {
-                content()
-            }
-        },
-    )
-}
-
-
-internal fun Modifier.useModifierIf(
-    condition: Boolean,
-    callback: (currentModifier: Modifier) -> Modifier
-): Modifier {
-    return if (condition) callback(this) else this
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .background(
+                    MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(cornerRadius),
+                ).padding(contentPadding)
+        ) {
+            content()
+        }
+    }
 }

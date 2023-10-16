@@ -1,14 +1,17 @@
 package com.mathias8dev.permissionhelper.permission
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 
@@ -28,10 +31,16 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
                 )
             }
             Text(
-                modifier = Modifier.padding(top = 32.dp),
+                modifier = Modifier
+                    .useModifierIf(
+                        condition = permission.iconRes != null,
+                        callback = { it.padding(top = 32.dp) }
+                    )
+                    .fillMaxWidth(),
                 text = permission.titleRes?.let { stringResource(id = it) }
                     ?: "Enable ${permission.manifestName}",
                 style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
@@ -39,7 +48,8 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
                 text = permission.descriptionRes?.let { stringResource(id = it) }
                     ?: "Please we need this permission to make you use all features of this application"
             )
-            TextButton(
+            Button(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
                     onProceed(true)
                 },
@@ -64,10 +74,16 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
                 )
             }
             Text(
-                modifier = Modifier.padding(top = 32.dp),
+                modifier = Modifier
+                    .useModifierIf(
+                        condition = permission.iconRes != null,
+                        callback = { it.padding(top = 32.dp) }
+                    )
+                    .fillMaxWidth(),
                 text = permission.titleRes?.let { stringResource(id = it) }
                     ?: "Enable ${permission.manifestName}",
                 style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
@@ -75,7 +91,8 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
                 text = permission.rationaleRes?.let { stringResource(id = it) }
                     ?: "Please we need this permission to make you use all features of this application"
             )
-            TextButton(
+            Button(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
                     onProceed(true)
                 },
@@ -100,10 +117,16 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
                 )
             }
             Text(
-                modifier = Modifier.padding(top = 32.dp),
+                modifier = Modifier
+                    .useModifierIf(
+                        condition = permission.iconRes != null,
+                        callback = { it.padding(top = 32.dp) }
+                    )
+                    .fillMaxWidth(),
                 text = permission.titleRes?.let { stringResource(id = it) }
                     ?: "Enable ${permission.manifestName}",
                 style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
@@ -111,7 +134,8 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
                 text = permission.grantedRes?.let { stringResource(id = it) }
                     ?: "Thank you for granting the permission"
             )
-            TextButton(
+            Button(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
                     onProceed()
                 },
@@ -136,10 +160,16 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
                 )
             }
             Text(
-                modifier = Modifier.padding(top = 32.dp),
+                modifier = Modifier
+                    .useModifierIf(
+                        condition = permission.iconRes != null,
+                        callback = { it.padding(top = 32.dp) }
+                    )
+                    .fillMaxWidth(),
                 text = permission.titleRes?.let { stringResource(id = it) }
                     ?: "Enable ${permission.manifestName}",
                 style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
@@ -147,7 +177,8 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
                 text = permission.gotoSettingsRes?.let { stringResource(id = it) }
                     ?: "We are not authorized to ask you for the permission. Please goto settings to do it yourself"
             )
-            TextButton(
+            Button(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
                     onProceed(true)
                 },

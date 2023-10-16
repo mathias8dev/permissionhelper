@@ -1,6 +1,7 @@
 package com.mathias8dev.permissionhelper.permission
 
 import android.content.Context
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Stable
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 @Stable
 internal class PermissionHelperScopeImpl internal constructor(
     private val permission: Permission,
-    private val context: Context
+    private val context: Context,
 ) : PermissionHelperScope {
 
     private val _permissionRequestEvent =
@@ -32,7 +33,7 @@ internal class PermissionHelperScopeImpl internal constructor(
     }
 
     private fun setupPermissionLauncher() {
-        requestPermissionLauncher = context.findActivityResultCaller().registerForActivityResult(
+        requestPermissionLauncher = context.registerActivityLauncher(
             ActivityResultContracts.RequestPermission()
         ) {
             if (it) onPermissionResult?.invoke(PermissionState.Granted)
@@ -53,8 +54,11 @@ internal class PermissionHelperScopeImpl internal constructor(
     }
 
     private fun emitIdle() {
+        Log.d("PermissionScopeImpl", "Try emitting idle")
         coroutineScope.launch {
-            PermissionRequestEvent.Idle
+            _permissionRequestEvent.emit(
+                PermissionRequestEvent.Idle
+            )
         }
     }
 

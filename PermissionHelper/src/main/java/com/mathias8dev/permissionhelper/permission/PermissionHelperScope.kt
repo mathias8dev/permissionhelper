@@ -27,7 +27,7 @@ interface MultiplePermissionHelperScope {
     /**
      * Return the corresponding [PermissionState] corresponding to the provided permissionManifestKeys
      */
-    fun getPermissionState(permissionManifestKeys: List<String>): List<Pair<Permission, PermissionState>>
+    fun getPermissionStateByKeys(permissionManifestKeys: List<String>): List<Pair<Permission, PermissionState>>
 
     /**
      * Used to launch permissions. Permissions are launched according to the defined launch strategy
@@ -39,7 +39,6 @@ interface MultiplePermissionHelperScope {
      * permissions are launched.
      */
     fun launchStrategy(
-        permissions: List<Permission>,
-        strategyProvider: (permissions: List<Permission>) -> PermissionLaunchStrategy?
+        strategyProvider: (permissions: Collection<Permission>) -> PermissionLaunchStrategy?
     )
 }
