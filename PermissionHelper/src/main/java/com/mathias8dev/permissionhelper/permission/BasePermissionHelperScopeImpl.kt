@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+// TODO Refactor this class
+
 internal open class BasePermissionHelperScopeImpl(
     protected val context: Context
 ): PermissionHelperScope {
