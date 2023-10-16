@@ -181,51 +181,55 @@ MultiplePermissionHelper(
 <summary>Using One Shot Permission request with OneShotPermissionsHelper</summary>
 
 ```kotlin
-val cameraPermission = remember {
-    Permission(
-        manifestKey = Manifest.permission.CAMERA
-    )
+val cameraPermission = remember {  
+  Permission(  
+        manifestKey = Manifest.permission.CAMERA  
+  )  
 }
 
-val coarseLocation = remember {
-    Permission(
-        manifestKey = Manifest.permission.ACCESS_COARSE_LOCATION
-    )
+val coarseLocation = remember {  
+  Permission(  
+        manifestKey = Manifest.permission.ACCESS_COARSE_LOCATION  
+  )  
+}  
+  
+val fineLocation = remember {  
+  Permission(  
+        manifestKey = Manifest.permission.ACCESS_FINE_LOCATION  
+  )  
 }
 
-val fineLocation = remember {
-    Permission(
-        manifestKey = Manifest.permission.ACCESS_FINE_LOCATION
-    )
-}
-
-OneShotPermissionsHelper(
-    permissions = listOf(fineLocation, coarseLocation, cameraPermission)
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        TextButton(
-            onClick = {
-                launchPermissions {
-                    Toast.makeText(
-                        localContext,
-                        if (it.all { itt -> itt.second.isGranted }) "permissions granted"
-                        else "permissions are not granted",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }) {
-            Text("Test multiple permissions")
-        }
-    }
+OneShotPermissionsHelper(  
+    permissions = listOf(fineLocation, coarseLocation, cameraPermission) 
+) {  
+  Column(  
+        modifier = Modifier  
+            .fillMaxSize()  
+            .padding(16.dp),  
+	    verticalArrangement = Arrangement.Center,  
+	    horizontalAlignment = Alignment.CenterHorizontally  
+  ) {   
+  
+  TextButton(
+    onClick = {  
+	  launchPermissions {  
+		  Toast.makeText(  
+			 localContext,  
+			 if (it.all { itt -> itt.second.isGranted }) "permissions granted"  
+			 else "permissions are not granted",  
+			 Toast.LENGTH_LONG  
+	  ).show()  
+	            }  
+ }) {  
+	  Text("Test multiple permissions")  
+  }  
+ }
 }
 ```
+
+### Learn more
+To learn more about this library, please read <a href="https://linkedin.com/in/mathias8dev">my articles</a> written on linkedin about the topic .
+
 
 ## License
 ```
