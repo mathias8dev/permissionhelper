@@ -41,6 +41,10 @@ fun PermissionDialog(
                     MaterialTheme.colorScheme.secondaryContainer,
                     shape = RoundedCornerShape(cornerRadius),
                 ).padding(contentPadding)
+                .useModifierIf(
+                    condition = makeContentScrollable,
+                    callback = {it.verticalScroll(scrollState)}
+                )
         ) {
             content()
         }
