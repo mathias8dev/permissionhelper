@@ -1,10 +1,12 @@
 package com.mathias8dev.permissionhelper.permission
 
 import android.content.Context
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+@Stable
 internal class MultiplePermissionHelperScopeImpl internal constructor(
     permissions: Collection<Permission>,
     context: Context

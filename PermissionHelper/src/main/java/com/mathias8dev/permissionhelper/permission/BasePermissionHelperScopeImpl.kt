@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -11,11 +13,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// TODO Refactor this class
 
+
+@Stable
 internal open class BasePermissionHelperScopeImpl(
     protected val context: Context
-): PermissionHelperScope {
+): PermissionHelperScope, RememberObserver {
     protected val _permissionRequestEvent =
         MutableStateFlow<PermissionRequestEvent>(PermissionRequestEvent.Idle)
     val permissionRequestEvent = _permissionRequestEvent.asStateFlow()
@@ -26,9 +29,6 @@ internal open class BasePermissionHelperScopeImpl(
 
     protected lateinit var currentLaunchedPermission: Permission
 
-    init {
-        setupPermissionLauncher()
-    }
 
     private fun setupPermissionLauncher() {
         requestPermissionLauncher = context.registerActivityLauncher(
@@ -103,5 +103,19 @@ internal open class BasePermissionHelperScopeImpl(
                 )
             }
         }
+    }
+
+    override fun onAbandoned() {
+        // Nothing to do as [onRemembered] was not called.
+    }
+
+    override fun onForgotten() {
+        if(::requestPermissionLauncher.isInitialized) {
+            requestPermissionLauncher.unregister()
+        }
+    }
+
+    override fun onRemembered() {
+        setupPermissionLauncher()
     }
 }

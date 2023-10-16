@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -11,10 +13,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+
+@Stable
 internal class OneShotPermissionsHelperScopeImpl(
     permissions: List<Permission>,
     val context: Context
-) : OneShotPermissionsHelperScope {
+) : OneShotPermissionsHelperScope, RememberObserver {
 
     private val _permissionRequestEvent =
         MutableStateFlow<OneShotPermissionsRequestEvent>(OneShotPermissionsRequestEvent.Idle)
@@ -25,11 +29,8 @@ internal class OneShotPermissionsHelperScopeImpl(
     private lateinit var requestPermissionsLauncher: ActivityResultLauncher<Array<String>>
 
     private val declaredPermissions = permissions.distinct()
-    var launchedPermissions = declaredPermissions
+    private var launchedPermissions = declaredPermissions
 
-    init {
-        setupPermissionLauncher()
-    }
 
     private fun getResults() = launchedPermissions.map { launchedPermission ->
         if (context.checkPermission(launchedPermission.manifestKey))
@@ -140,6 +141,20 @@ internal class OneShotPermissionsHelperScopeImpl(
             }
         }
 
+    }
+
+    override fun onAbandoned() {
+        // Nothing to do as [onRemembered] was not called.
+    }
+
+    override fun onForgotten() {
+       if (::requestPermissionsLauncher.isInitialized) {
+           requestPermissionsLauncher.unregister()
+       }
+    }
+
+    override fun onRemembered() {
+        setupPermissionLauncher()
     }
 
 }
