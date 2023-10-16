@@ -30,17 +30,6 @@ interface OneShotPermissionsRequestUi {
 
 
     /**
-     * The Ui to show to the user when he grants for the permission
-     * [permissions]: The current permissions that needs to be granted
-     * */
-    @Composable
-    fun OnPermissionsGranted(
-        permissions: List<Permission>,
-        onProceed: () -> Unit
-    )
-
-
-    /**
      * The Ui to show to the user when he should go to settings to grant for the permission
      * [permissions]: The current permissions that needs to be granted
      * [onProceed]: Method to call mandatory when the user do the action that should navigate him to

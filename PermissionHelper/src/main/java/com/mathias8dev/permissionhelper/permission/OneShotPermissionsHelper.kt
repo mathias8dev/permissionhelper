@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 
 @Composable
@@ -24,7 +25,7 @@ fun OneShotPermissionsHelper(
     }
 
 
-    val permissionRequestEvent by scope.permissionRequestEvent.collectAsState()
+    val permissionRequestEvent by scope.permissionRequestEvent.collectAsStateWithLifecycle()
 
     when(permissionRequestEvent) {
         is OneShotPermissionsRequestEvent.OnRequestPermission -> {
@@ -34,13 +35,7 @@ fun OneShotPermissionsHelper(
                 onProceed =event.onProceed
             )
         }
-        is OneShotPermissionsRequestEvent.OnPermissionsGranted -> {
-            val event = permissionRequestEvent as OneShotPermissionsRequestEvent.OnPermissionsGranted
-            permissionRequestUi.OnPermissionsGranted(
-                permissions = event.permissions,
-                onProceed = event.onProceed
-            )
-        }
+
         is OneShotPermissionsRequestEvent.OnShowRationale -> {
             val event = permissionRequestEvent as OneShotPermissionsRequestEvent.OnShowRationale
             permissionRequestUi.OnPermissionsShowRationale(

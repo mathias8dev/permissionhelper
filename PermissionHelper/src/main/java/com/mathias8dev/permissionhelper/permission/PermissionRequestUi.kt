@@ -31,16 +31,6 @@ interface PermissionRequestUi {
 
 
 
-    /**
-     * The Ui to show to the user when he grants for the permission
-     * [permission]: The current permission that needs to be granted
-     * */
-    @Composable
-    fun OnPermissionGranted(
-        permission: Permission,
-        onProceed: () -> Unit
-    )
-
 
     /**
      * The Ui to show to the user when he should go to settings to grant for the permission

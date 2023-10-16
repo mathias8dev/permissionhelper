@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 
 @Composable
@@ -25,20 +26,13 @@ fun PermissionHelper(
     }
 
 
-    val permissionRequestEvent by scope.permissionRequestEvent.collectAsState()
+    val permissionRequestEvent by scope.permissionRequestEvent.collectAsStateWithLifecycle()
 
     when(permissionRequestEvent) {
         is PermissionRequestEvent.OnRequestPermission -> {
             permissionRequestUi.OnPermissionInitialRequest(
                 permission = permission,
                 onProceed = (permissionRequestEvent as PermissionRequestEvent.OnRequestPermission)
-                    .onProceed
-            )
-        }
-        is PermissionRequestEvent.OnPermissionGranted -> {
-            permissionRequestUi.OnPermissionGranted(
-                permission = permission,
-                onProceed = (permissionRequestEvent as PermissionRequestEvent.OnPermissionGranted)
                     .onProceed
             )
         }

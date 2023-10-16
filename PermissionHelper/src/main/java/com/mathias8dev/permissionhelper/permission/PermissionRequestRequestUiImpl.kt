@@ -103,48 +103,6 @@ object PermissionRequestRequestUiImpl : PermissionRequestUi {
         }
     }
 
-    @Composable
-    override fun OnPermissionGranted(permission: Permission, onProceed: () -> Unit) {
-        PermissionDialog(
-            makeContentScrollable = true,
-            onDismissRequest = { onProceed() }
-        ) {
-            permission.iconRes?.let {
-                Icon(
-                    painter = painterResource(id = it),
-                    contentDescription = "Permission illustration icon",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            Text(
-                modifier = Modifier
-                    .useModifierIf(
-                        condition = permission.iconRes != null,
-                        callback = { it.padding(top = 32.dp) }
-                    )
-                    .fillMaxWidth(),
-                text = permission.titleRes?.let { stringResource(id = it) }
-                    ?: "Enable ${permission.manifestName}",
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                modifier = Modifier.padding(top = 16.dp),
-                text = permission.grantedRes?.let { stringResource(id = it) }
-                    ?: "Thank you for granting the permission"
-            )
-            Button(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    onProceed()
-                },
-                content = {
-                    Text(text = "OK")
-                }
-            )
-        }
-    }
 
     @Composable
     override fun OnPermissionGotoSettings(permission: Permission, onProceed: (Boolean) -> Unit) {

@@ -169,51 +169,6 @@ object OneShotPermissionsRequestUiImpl : OneShotPermissionsRequestUi {
         }
     }
 
-    @Composable
-    override fun OnPermissionsGranted(permissions: List<Permission>, onProceed: () -> Unit) {
-        val icons = remember {
-            permissions.mapNotNull { it.iconRes }
-        }
-        PermissionDialog(
-            makeContentScrollable = true,
-            onDismissRequest = { onProceed() }
-        ) {
-            if (icons.isNotEmpty()) Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-            ) {
-                icons.map {
-                    Icon(
-                        painter = painterResource(id = it),
-                        contentDescription = "Permission illustration icon",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-            if (icons.isNotEmpty()) Spacer(modifier = Modifier.height(32.dp))
-
-            permissions.forEach { permission ->
-                ListItem(
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    Text(
-                        modifier = Modifier.padding(top = 16.dp),
-                        text = permission.grantedRes?.let { stringResource(id = it) }
-                            ?: "Thank you for granting the permission"
-                    )
-                }
-            }
-            Button(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    onProceed()
-                },
-                content = {
-                    Text(text = "OK")
-                }
-            )
-        }
-    }
 
     @Composable
     override fun OnPermissionsGotoSettings(
