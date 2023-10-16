@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("maven-publish")
+    `maven-publish`
 }
 
 android {
@@ -39,6 +39,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
@@ -60,14 +67,16 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
 
-afterEvaluate {
-    configure<PublishingExtension> {
-        this.publications {
-            create<MavenPublication>("release") {
+
+configure<PublishingExtension> {
+    this.publications {
+        register<MavenPublication>("release") {
+            groupId = "com.mathias8dev"
+            artifactId = "permissionhelper"
+            version = "1.0.0"
+
+            afterEvaluate {
                 from(components["release"])
-                groupId = "com.mathias8dev"
-                artifactId = "permissionhelper"
-                version = "1.0.0"
             }
         }
     }
