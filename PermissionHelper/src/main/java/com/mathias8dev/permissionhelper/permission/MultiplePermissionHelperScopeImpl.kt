@@ -58,10 +58,8 @@ internal class MultiplePermissionHelperScopeImpl internal constructor(
                 coroutineScope.launch {
                     lastConfig?.let { oldConfig ->
                         if (!permissionWasAlreadyGranted || !oldConfig.skipConfigIfAlreadyGranted) {
-                            oldConfig.delayForNextRequest?.let {
-                                delay(it)
-                            }
                             oldConfig.suspendedCall?.invoke()
+
                         }
                     }
                     lastConfig = permissionConfig

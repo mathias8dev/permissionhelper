@@ -60,11 +60,14 @@ interface ChainBuilder {
 
 interface LaunchFlowBuilder {
     fun checkHasPermissions(permissions: List<Permission>): LaunchFlowBuilder
+    /**
+     * Feature not yet supported
+     * */
     fun delayForNextRequest(duration: Duration?): LaunchFlowBuilder
     fun makeSuspendedCallBeforeNext(call: suspend ()->Unit, wait: Boolean): LaunchFlowBuilder
     fun and(): ChainBuilder
     fun abortOnFail(abort: Boolean) : LaunchFlowBuilder
-    fun skipConfigurationIfAlreadyGranted(skip: Boolean) : LaunchFlowBuilder
+    fun skipStrategyIfAlreadyGranted(skip: Boolean) : LaunchFlowBuilder
 }
 
 
@@ -77,7 +80,7 @@ internal class LaunchFlowBuilderImpl internal constructor(
     private var delayForNextRequest: Duration? = null
     private var suspendedCall: (suspend ()->Unit)? = null
     private var abortOnFail: Boolean = true
-    private var skipConfigIfAlreadyGranted: Boolean = true
+    private var skipStrategyIfAlreadyGranted: Boolean = true
 
     override fun checkHasPermissions(permissions: List<Permission>): LaunchFlowBuilder {
         permissionsToCheck.addAll(permissions)
@@ -114,8 +117,8 @@ internal class LaunchFlowBuilderImpl internal constructor(
         return this
     }
 
-    override fun skipConfigurationIfAlreadyGranted(skip: Boolean): LaunchFlowBuilder {
-        this.skipConfigIfAlreadyGranted = skip
+    override fun skipStrategyIfAlreadyGranted(skip: Boolean): LaunchFlowBuilder {
+        this.skipStrategyIfAlreadyGranted = skip
         return this
     }
 

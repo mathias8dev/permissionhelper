@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,8 +24,10 @@ import com.mathias8dev.permissionhelper.permission.MultiplePermissionHelper
 import com.mathias8dev.permissionhelper.permission.OneShotPermissionsHelper
 import com.mathias8dev.permissionhelper.permission.Permission
 import com.mathias8dev.permissionhelper.permission.PermissionHelper
+import com.mathias8dev.permissionhelper.permission.PermissionLaunchStrategy
 import com.mathias8dev.permissionhelper.permission.isGranted
 import com.mathias8dev.sample.ui.theme.SampleTheme
+import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +89,22 @@ class MainActivity : ComponentActivity() {
                                 cameraPermission to null
                             )
                         ) {
+
+                            launchStrategy {
+
+                                PermissionLaunchStrategy.Builder()
+                                    .forPermission(fineLocation)
+                                    .abortOnFail(false)
+                                    .and()
+                                    .forPermission(coarseLocation)
+                                    .delayForNextRequest(2.seconds)
+                                    .abortOnFail(false)
+                                    .skipStrategyIfAlreadyGranted(true)
+                                    .and()
+                                    .build()
+
+                            }
+
                             TextButton(onClick = {
                                 launchPermissions {
                                     Toast.makeText(
