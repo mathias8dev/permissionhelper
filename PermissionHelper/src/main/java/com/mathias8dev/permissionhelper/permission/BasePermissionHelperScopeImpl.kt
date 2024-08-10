@@ -2,6 +2,7 @@ package com.mathias8dev.permissionhelper.permission
 
 import android.Manifest
 import android.content.Context
+import android.os.Environment
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -75,11 +76,17 @@ internal open class BasePermissionHelperScopeImpl(
         )
     }
 
+    protected fun permissionStateOf(permission: Permission): PermissionState {
+        return if (permission.manifestKey == Manifest.permission.MANAGE_EXTERNAL_STORAGE && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
+            if (Environment.isExternalStorageManager()) PermissionState.Granted else PermissionState.Denied
+        else if (context.checkPermission(permission.manifestKey)) PermissionState.Granted
+        else PermissionState.Denied
+    }
+
 
     override fun getPermissionState(): PermissionState {
         checkIfCurrentPermissionIsInitialized()
-        return if (context.checkPermission(currentLaunchedPermission.manifestKey)) PermissionState.Granted
-        else PermissionState.Denied
+       return permissionStateOf(currentLaunchedPermission)
     }
 
 
@@ -88,7 +95,7 @@ internal open class BasePermissionHelperScopeImpl(
         coroutineScope.launch {
             this@BasePermissionHelperScopeImpl.onPermissionResult = onPermissionResult
             val activity = context.findActivity()
-            if (activity.checkPermission(currentLaunchedPermission.manifestKey)) {
+            if (permissionStateOf(currentLaunchedPermission) == PermissionState.Granted) {
                 onPermissionResult(PermissionState.Granted)
             } else if (activity.shouldShowRationale(currentLaunchedPermission.manifestKey)) {
                 _permissionRequestEvent.emit(
