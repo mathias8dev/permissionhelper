@@ -1,5 +1,6 @@
 package com.mathias8dev.permissionhelper.permission
 
+import android.Manifest
 import android.content.Context
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
@@ -52,13 +53,24 @@ internal class OneShotPermissionsHelperScopeImpl(
                 onPermissionsResult?.invoke(results)
             else {
                 coroutineScope.launch {
+                    val notGrantedPermissions =
+                        declaredPermissions.filter { permission -> notGranted.contains(permission.manifestKey) }
                     _permissionRequestEvent.emit(
                         OneShotPermissionsRequestEvent.OnGotoSettings(
-                            declaredPermissions.filter { key -> notGranted.contains(key.manifestKey) }
+                            notGrantedPermissions
                         ) { proceed ->
                             emitIdle()
-                            if (proceed) context.openAppSystemSettings()
-                            else onPermissionsResult?.invoke(results)
+                            if (proceed) {
+                                if (notGrantedPermissions.size == 1 &&
+                                    notGrantedPermissions.first().manifestKey == Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                                ) {
+                                    context.openStorageSystemSettings()
+                                } else {
+                                    context.openAppSystemSettings()
+                                }
+                            } else {
+                                onPermissionsResult?.invoke(results)
+                            }
                         }
                     )
                 }
@@ -148,9 +160,9 @@ internal class OneShotPermissionsHelperScopeImpl(
     }
 
     override fun onForgotten() {
-       if (::requestPermissionsLauncher.isInitialized) {
-           requestPermissionsLauncher.unregister()
-       }
+        if (::requestPermissionsLauncher.isInitialized) {
+            requestPermissionsLauncher.unregister()
+        }
     }
 
     override fun onRemembered() {
