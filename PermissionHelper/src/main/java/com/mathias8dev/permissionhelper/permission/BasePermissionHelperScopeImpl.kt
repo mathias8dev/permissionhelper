@@ -1,5 +1,6 @@
 package com.mathias8dev.permissionhelper.permission
 
+import android.Manifest
 import android.content.Context
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
@@ -14,11 +15,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
-
 @Stable
 internal open class BasePermissionHelperScopeImpl(
     protected val context: Context
-): PermissionHelperScope, RememberObserver {
+) : PermissionHelperScope, RememberObserver {
     protected val _permissionRequestEvent =
         MutableStateFlow<PermissionRequestEvent>(PermissionRequestEvent.Idle)
     val permissionRequestEvent = _permissionRequestEvent.asStateFlow()
@@ -36,15 +36,22 @@ internal open class BasePermissionHelperScopeImpl(
         ) {
             checkIfCurrentPermissionIsInitialized()
             if (it) onPermissionResult?.invoke(PermissionState.Granted)
-            else if (context.findActivity().shouldShowRationale(currentLaunchedPermission.manifestKey))
+            else if (context.findActivity()
+                    .shouldShowRationale(currentLaunchedPermission.manifestKey)
+            )
                 onPermissionResult?.invoke(PermissionState.Denied)
             else {
                 coroutineScope.launch {
                     _permissionRequestEvent.emit(
                         PermissionRequestEvent.OnGotoSettings(currentLaunchedPermission) { proceed ->
                             emitIdle()
-                            if (proceed) context.openAppSystemSettings()
-                            else onPermissionResult?.invoke(PermissionState.Denied)
+                            if (proceed) {
+                                if (currentLaunchedPermission.manifestKey == Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+                                    context.openStorageSystemSettings()
+                                else context.openAppSystemSettings()
+                            } else {
+                                onPermissionResult?.invoke(PermissionState.Denied)
+                            }
                         }
                     )
                 }
@@ -110,7 +117,7 @@ internal open class BasePermissionHelperScopeImpl(
     }
 
     override fun onForgotten() {
-        if(::requestPermissionLauncher.isInitialized) {
+        if (::requestPermissionLauncher.isInitialized) {
             requestPermissionLauncher.unregister()
         }
     }

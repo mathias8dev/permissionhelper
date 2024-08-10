@@ -73,6 +73,16 @@ fun Context.openAppSystemSettings() {
 }
 
 
+fun Context.openStorageSystemSettings() {
+    this.findActivity().startActivity(Intent().apply {
+        action = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
+            Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+        else Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        data = Uri.fromParts("package", packageName, null)
+    })
+}
+
+
 fun <I, O> Context.registerActivityLauncher(
     contract: ActivityResultContract<I, O>,
     callback: (O) -> Unit,
