@@ -73,9 +73,9 @@ dependencies {
 configure<PublishingExtension> {
     this.publications {
         register<MavenPublication>("release") {
-            groupId = "com.mathias8dev"
+            groupId = "com.github.mathias8dev"
             artifactId = "permissionhelper"
-            version = "1.0.4"
+            version = "1.0.6"
 
             afterEvaluate {
                 from(components["release"])

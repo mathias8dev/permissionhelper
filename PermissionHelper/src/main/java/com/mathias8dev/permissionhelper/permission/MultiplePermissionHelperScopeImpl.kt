@@ -16,11 +16,7 @@ internal class MultiplePermissionHelperScopeImpl internal constructor(
 
     private fun permissionsState(permissions: List<Permission>): List<Pair<Permission, PermissionState>> {
         return permissions.map {
-            if (context.checkPermission(it.manifestKey)) {
-                it to PermissionState.Granted
-            } else {
-                it to PermissionState.Denied
-            }
+            it to permissionStateOf(it)
         }
     }
 
@@ -59,11 +55,10 @@ internal class MultiplePermissionHelperScopeImpl internal constructor(
                     lastConfig?.let { oldConfig ->
                         if (!permissionWasAlreadyGranted || !oldConfig.skipConfigIfAlreadyGranted) {
                             oldConfig.suspendedCall?.invoke()
-
                         }
                     }
                     lastConfig = permissionConfig
-                    if (context.checkPermission(permission.manifestKey)) {
+                    if (permissionStateOf(permission) == PermissionState.Granted) {
                         launchedPermissionsResult.add(permission to PermissionState.Granted)
                         permissionWasAlreadyGranted = true
                         index++
