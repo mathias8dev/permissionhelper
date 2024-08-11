@@ -61,9 +61,7 @@ internal class OneShotPermissionsHelperScopeImpl(
                         ) { proceed ->
                             emitIdle()
                             if (proceed) {
-                                if (notGrantedPermissions.size == 1 &&
-                                    notGrantedPermissions.first().manifestKey == Manifest.permission.MANAGE_EXTERNAL_STORAGE
-                                ) {
+                                if (notGrantedPermissions.find { notGrantedPermission -> notGrantedPermission.manifestKey == Manifest.permission.MANAGE_EXTERNAL_STORAGE } != null) {
                                     context.openStorageSystemSettings()
                                 } else {
                                     context.openAppSystemSettings()
