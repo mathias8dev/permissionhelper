@@ -77,9 +77,7 @@ internal open class BasePermissionHelperScopeImpl(
     }
 
     protected fun permissionStateOf(permission: Permission): PermissionState {
-        return if (permission.manifestKey == Manifest.permission.MANAGE_EXTERNAL_STORAGE && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
-            if (Environment.isExternalStorageManager()) PermissionState.Granted else PermissionState.Denied
-        else if (context.checkPermission(permission.manifestKey)) PermissionState.Granted
+        return if (context.checkPermission(permission.manifestKey)) PermissionState.Granted
         else PermissionState.Denied
     }
 

@@ -87,14 +87,15 @@ internal class OneShotPermissionsHelperScopeImpl(
         }
     }
 
+    private fun permissionStateOf(permission: Permission): PermissionState {
+        return if (context.checkPermission(permission.manifestKey)) PermissionState.Granted
+        else PermissionState.Denied
+    }
 
-    private fun permissionsState(permissions: List<Permission>): List<Pair<Permission, PermissionState>> {
+
+    private fun permissionsStateOf(permissions: List<Permission>): List<Pair<Permission, PermissionState>> {
         return permissions.map {
-            if (context.checkPermission(it.manifestKey)) {
-                it to PermissionState.Granted
-            } else {
-                it to PermissionState.Denied
-            }
+            it to permissionStateOf(it)
         }
     }
 
@@ -105,7 +106,7 @@ internal class OneShotPermissionsHelperScopeImpl(
     override fun getPermissionStateByKeys(permissionManifestKeys: List<String>): List<Pair<Permission, PermissionState>> {
         val foundPermissions =
             declaredPermissions.filter { permissionManifestKeys.contains(it.manifestKey) }
-        return permissionsState(foundPermissions)
+        return permissionsStateOf(foundPermissions)
     }
 
     override fun launchPermissions(onPermissionsResult: (List<Pair<Permission, PermissionState>>) -> Unit) {
@@ -137,7 +138,7 @@ internal class OneShotPermissionsHelperScopeImpl(
                     OneShotPermissionsRequestEvent.OnShowRationale(rationalePermissions) { proceed ->
                         emitIdle()
                         if (proceed) requestPermissionsLauncher.launch(
-                            deniedPermissions.map { it.manifestKey }.toTypedArray()
+                            rationalePermissions.map { it.manifestKey }.toTypedArray()
                         ) else onPermissionsResult(results)
                     }
                 )
@@ -146,7 +147,7 @@ internal class OneShotPermissionsHelperScopeImpl(
                     OneShotPermissionsRequestEvent.OnRequestPermission(deniedPermissions) { proceed ->
                         emitIdle()
                         if (proceed) requestPermissionsLauncher.launch(
-                            rationalePermissions.map { it.manifestKey }.toTypedArray()
+                            deniedPermissions.map { it.manifestKey }.toTypedArray()
                         ) else onPermissionsResult(results)
                     }
                 )

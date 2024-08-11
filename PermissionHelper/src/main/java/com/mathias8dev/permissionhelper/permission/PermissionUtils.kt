@@ -1,12 +1,14 @@
 package com.mathias8dev.permissionhelper.permission
 
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Environment
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.activity.result.ActivityResultCaller
@@ -55,14 +57,16 @@ internal inline fun <reified T> findOwner(context: Context): T? {
     return null
 }
 
-internal fun Context.checkPermission(permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(this, permission) ==
-            PackageManager.PERMISSION_GRANTED
+fun Context.checkPermission(permission: String): Boolean {
+    return if (permission == Manifest.permission.MANAGE_EXTERNAL_STORAGE && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
+        Environment.isExternalStorageManager()
+    else ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 }
 
-internal fun Activity.shouldShowRationale(permission: String): Boolean {
+fun Activity.shouldShowRationale(permission: String): Boolean {
     return ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
 }
+
 
 
 fun Context.openAppSystemSettings() {

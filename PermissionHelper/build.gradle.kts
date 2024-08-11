@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.mathias8dev.permissionhelper"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -75,7 +75,7 @@ configure<PublishingExtension> {
         register<MavenPublication>("release") {
             groupId = "com.github.mathias8dev"
             artifactId = "permissionhelper"
-            version = "1.0.6"
+            version = "1.0.7"
 
             afterEvaluate {
                 from(components["release"])
