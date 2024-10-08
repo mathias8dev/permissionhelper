@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,12 +28,12 @@ fun PermissionDialog(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val scrollState = rememberScrollState()
-    AlertDialog(
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Column(
             modifier = Modifier
@@ -43,7 +44,7 @@ fun PermissionDialog(
                 ).padding(contentPadding)
                 .useModifierIf(
                     condition = makeContentScrollable,
-                    callback = {it.verticalScroll(scrollState)}
+                    callback = { it.verticalScroll(scrollState) }
                 )
         ) {
             content()
